@@ -11,10 +11,9 @@
  * Data Source: goodreturns.in (publicly accessible data)
  */
 
-require('dotenv').config();
-const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer';
 
-async function sendTelegramMessage(message) {
+async function sendTelegramMessage(message: string): Promise<void> {
   const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
@@ -31,11 +30,11 @@ async function sendTelegramMessage(message) {
       }),
     });
   } catch (error) {
-    console.error('Failed to send Telegram message:', error.message);
+    console.error('Failed to send Telegram message:', (error as Error).message);
   }
 }
 
-async function getGoldPrices() {
+async function getGoldPrices(): Promise<void> {
   const browser = await puppeteer.launch({
     headless: true,
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
@@ -90,17 +89,28 @@ async function getGoldPrices() {
       }
 
       const todayRow = rows[0];
+      if (!todayRow) {
+        return { error: 'Today row not found' };
+      }
       const todayCells = todayRow.querySelectorAll('td');
-      const todayDate = todayCells[0].textContent.trim();
-      const todayPrice = todayCells[1].textContent.trim().split('\n')[0].trim();
+      if (todayCells.length < 2) {
+        return { error: 'Not enough cells in today row' };
+      }
+      const todayDate = todayCells[0]?.textContent?.trim() || '';
+      const todayPrice =
+        todayCells[1]?.textContent?.trim()?.split('\n')[0]?.trim() || '';
 
       const yesterdayRow = rows[1];
+      if (!yesterdayRow) {
+        return { error: 'Yesterday row not found' };
+      }
       const yesterdayCells = yesterdayRow.querySelectorAll('td');
-      const yesterdayDate = yesterdayCells[0].textContent.trim();
-      const yesterdayPrice = yesterdayCells[1].textContent
-        .trim()
-        .split('\n')[0]
-        .trim();
+      if (yesterdayCells.length < 2) {
+        return { error: 'Not enough cells in yesterday row' };
+      }
+      const yesterdayDate = yesterdayCells[0]?.textContent?.trim() || '';
+      const yesterdayPrice =
+        yesterdayCells[1]?.textContent?.trim()?.split('\n')[0]?.trim() || '';
 
       return {
         today: {
@@ -116,7 +126,7 @@ async function getGoldPrices() {
 
     await browser.close();
 
-    if (!goldData || goldData.error) {
+    if (!goldData || goldData.error || !goldData.today || !goldData.yesterday) {
       const errorMsg = `*Gold Price Scraper Error*\n\n${
         goldData?.error || 'Could not find data'
       }`;
@@ -176,9 +186,11 @@ _Source: goodreturns.in (publicly available data)_`.trim();
     }
     console.log('==============================================\n');
   } catch (error) {
-    const errorMsg = `*Gold Price Scraper Error*\n\n${error.message}`;
+    const errorMsg = `*Gold Price Scraper Error*\n\n${
+      (error as Error).message
+    }`;
     await sendTelegramMessage(errorMsg);
-    console.error('Error fetching gold prices:', error.message);
+    console.error('Error fetching gold prices:', (error as Error).message);
     await browser.close();
   }
 }

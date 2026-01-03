@@ -14,10 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: "20"
+          bun-version: latest
 
       - name: Install Chrome dependencies
         run: |
@@ -37,11 +37,11 @@ jobs:
             libasound2t64
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install
 
       - name: Run gold price scraper
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
-        run: node index.js
+        run: bun run index.ts

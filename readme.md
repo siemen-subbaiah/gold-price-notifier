@@ -1,6 +1,6 @@
 # gold-price-notifier
 
-A simple Node.js script that fetches publicly available gold price information
+A simple Bun script that fetches publicly available gold price information
 and sends daily updates to a Telegram bot.
 
 ## How it works
@@ -14,7 +14,7 @@ and sends daily updates to a Telegram bot.
 ### 1. Install Dependencies
 
 ```bash
-npm install
+bun install
 ```
 
 ### 2. Create a Telegram Bot
@@ -67,7 +67,7 @@ TELEGRAM_CHAT_ID=your_chat_id_here
 ### 5. Test Locally
 
 ```bash
-node index.js
+bun run index.ts
 ```
 
 You should receive a Telegram notification with the current gold price!
