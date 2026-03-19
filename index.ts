@@ -26,8 +26,8 @@ async function sendTelegramMessage(message: string): Promise<void> {
       body: JSON.stringify({
         chat_id: TELEGRAM_CHAT_ID,
         text: message,
-        parse_mode: 'Markdown',
-      }),
+        parse_mode: 'Markdown'
+      })
     });
   } catch (error) {
     console.error('Failed to send Telegram message:', (error as Error).message);
@@ -46,8 +46,8 @@ async function getGoldPrices(): Promise<void> {
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--disable-gpu',
-      ],
+        '--disable-gpu'
+      ]
     });
 
     try {
@@ -67,7 +67,7 @@ async function getGoldPrices(): Promise<void> {
           'https://www.goodreturns.in/gold-rates/bangalore.html',
           {
             waitUntil: 'domcontentloaded',
-            timeout: 90000,
+            timeout: 90000
           }
         );
       } catch (navError) {
@@ -76,7 +76,7 @@ async function getGoldPrices(): Promise<void> {
           'https://www.goodreturns.in/gold-rates/bangalore.html',
           {
             waitUntil: 'load',
-            timeout: 90000,
+            timeout: 90000
           }
         );
       }
@@ -123,7 +123,7 @@ async function getGoldPrices(): Promise<void> {
         }
         const todayDate = todayCells[0]?.textContent?.trim() || '';
         const todayPrice =
-          todayCells[1]?.textContent?.trim()?.split('\n')[0]?.trim() || '';
+          todayCells[2]?.textContent?.trim()?.split('\n')[0]?.trim() || '';
 
         const yesterdayRow = rows[1];
         if (!yesterdayRow) {
@@ -135,17 +135,17 @@ async function getGoldPrices(): Promise<void> {
         }
         const yesterdayDate = yesterdayCells[0]?.textContent?.trim() || '';
         const yesterdayPrice =
-          yesterdayCells[1]?.textContent?.trim()?.split('\n')[0]?.trim() || '';
+          yesterdayCells[2]?.textContent?.trim()?.split('\n')[0]?.trim() || '';
 
         return {
           today: {
             date: todayDate,
-            price: todayPrice,
+            price: todayPrice
           },
           yesterday: {
             date: yesterdayDate,
-            price: yesterdayPrice,
-          },
+            price: yesterdayPrice
+          }
         };
       });
 
@@ -200,7 +200,7 @@ _Source: goodreturns.in (publicly available data)_`.trim();
 
       await sendTelegramMessage(message);
 
-      console.log('\n========== Gold Price (24K - 1 gram) ==========');
+      console.log('\n========== Gold Price (22K - 1 gram) ==========');
       console.log(
         `Today's price - ${goldData.today.price} (${goldData.today.date})`
       );

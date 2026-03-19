@@ -6,7 +6,7 @@ and sends daily updates to a Telegram bot.
 ## How it works
 
 - Runs once per day (via cron)
-- Extracts the latest 24K gold price for Bangalore
+- Extracts the latest 22K gold price for Bangalore
 - Sends today vs yesterday comparison to Telegram
 
 ## Setup Instructions
